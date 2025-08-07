@@ -14,6 +14,18 @@ OAUTH2_TOKEN = (
 INTERFACE_THERMOSTAT = "homeassistant.components.THERMOSTAT"
 INTERFACE_SWITCH = "homeassistant.components.SWITCH"
 
+DEFAULT_MIN_TEMPERATURE = 5.0
+DEFAULT_MAX_TEMPERATURE = 35.0
+
+# API Endpoints
+API_ENDPOINTS = {
+    "discover": "/integrations/home-assistant/discover",
+    "device_report": "/integrations/home-assistant/report/{device_id}",
+    "set_temperature": "/integrations/home-assistant/control/thermostat/{device_id}/set-temperature",
+    "set_thermostat_mode": "/integrations/home-assistant/control/thermostat/{device_id}/set-mode",
+    "set_switch_state": "/integrations/home-assistant/control/switch/{device_id}/change-state",
+}
+
 
 # Thermostat Modes
 class ThermostatMode(Enum):
@@ -25,13 +37,3 @@ class ThermostatMode(Enum):
     DEFROST = 4
     TIMER = 5
     PROGRAM = 6
-
-
-# API Endpoints
-API_ENDPOINTS = {
-    "discover": "/integrations/home-assistant/discover",
-    "device_report": "/integrations/home-assistant/report/{device_id}",
-    "set_temperature": "/integrations/home-assistant/control/thermostat/{device_id}/set-temperature",
-    "set_thermostat_mode": "/integrations/home-assistant/control/thermostat/{device_id}/set-mode",
-    "set_switch_state": "/integrations/home-assistant/control/switch/{device_id}/change-state",
-}

@@ -39,11 +39,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Watts-Digital/vision-homeassistant"
-Documentation = "https://github.com/.../visionpluspython"
-Repository = "https://github.com/.../visionpluspython"
-"Bug Tracker" = "https://github.com/.../visionpluspython/issues"
-Changelog = "https://github.com/.../visionpluspython/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/Watts-Digital/visionpluspython"
+Documentation = "https://github.com/Watts-Digital/visionpluspython"
+Repository = "https://github.com/Watts-Digital/visionpluspython"
+"Bug Tracker" = "https://github.com/Watts-Digital/visionpluspython/issues"
+Changelog = "https://github.com/Watts-Digital/visionpluspython/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["."]

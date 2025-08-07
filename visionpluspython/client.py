@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+from http import HTTPStatus
 import logging
 from typing import Any, Self
 
 import aiohttp
 
 from .auth import WattsVisionAuth
-from .const import API_BASE_URL, API_ENDPOINTS, API_TIMEOUT, ThermostatMode
+from .const import (
+    API_BASE_URL,
+    API_ENDPOINTS,
+    API_TIMEOUT,
+    DEFAULT_MAX_TEMPERATURE,
+    DEFAULT_MIN_TEMPERATURE,
+    ThermostatMode,
+)
 from .exceptions import (
     WattsVisionConnectionError,
     WattsVisionDeviceError,
@@ -83,7 +91,7 @@ class WattsVisionClient:
                 **kwargs,
             ) as response:
                 # Handle 401 with token refresh retry
-                if response.status == 401:
+                if response.status == HTTPStatus.UNAUTHORIZED:
                     token = await self.auth.get_access_token()
                     headers["Authorization"] = f"Bearer {token}"
 
@@ -106,7 +114,7 @@ class WattsVisionClient:
                 f"Request timed out after {self.timeout}s"
             ) from err
         except aiohttp.ClientResponseError as err:
-            if err.status == 404:
+            if err.status == HTTPStatus.NOT_FOUND:
                 raise WattsVisionDeviceError(f"Device not found: {endpoint}") from err
             raise WattsVisionError(f"API request failed: {err}") from err
         except aiohttp.ClientError as err:
@@ -177,9 +185,8 @@ class WattsVisionClient:
         if not isinstance(device, ThermostatDevice):
             raise WattsVisionDeviceError(f"Device {device_id} is not a thermostat")
 
-        # Safe temperature validation with fallbacks
-        min_temp = device.min_allowed_temperature or 5.0
-        max_temp = device.max_allowed_temperature or 35.0
+        min_temp = device.min_allowed_temperature or DEFAULT_MIN_TEMPERATURE
+        max_temp = device.max_allowed_temperature or DEFAULT_MAX_TEMPERATURE
 
         if not (min_temp <= temperature <= max_temp):
             raise WattsVisionDeviceError(
