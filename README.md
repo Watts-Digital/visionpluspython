@@ -1,7 +1,7 @@
-# visionplus-python
+# visionpluspython
 
-[![PyPI version](https://badge.fury.io/py/visionplus-python.svg)](https://badge.fury.io/py/visionplus-python)
-[![Python Support](https://img.shields.io/pypi/pyversions/visionplus-python.svg)](https://pypi.org/project/visionplus-python/)
+[![PyPI version](https://badge.fury.io/py/visionpluspython.svg)](https://badge.fury.io/py/visionpluspython)
+[![Python Support](https://img.shields.io/pypi/pyversions/visionpluspython.svg)](https://pypi.org/project/visionpluspython/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Python API wrapper for Watts Vision+ smart home system, providing easy Home Assistant integration with thermostats and switches.
@@ -18,7 +18,7 @@ A Python API wrapper for Watts Vision+ smart home system, providing easy Home As
 ### From PyPI (recommended)
 
 ```bash
-pip install visionplus-python
+pip install visionpluspython
 ```
 
 ## Supported Device Types
