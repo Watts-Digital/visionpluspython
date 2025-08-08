@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import asyncio
-import time
 from typing import Self
 
 import aiohttp
 import jwt
 
-from .const import API_TIMEOUT, OAUTH2_TOKEN
-from .exceptions import WattsVisionAuthError, WattsVisionConnectionError
+from homeassistant.helpers import config_entry_oauth2_flow
+
+from .exceptions import WattsVisionAuthError
 
 
 class WattsVisionAuth:
@@ -18,21 +18,13 @@ class WattsVisionAuth:
 
     def __init__(
         self,
-        client_id: str,
-        client_secret: str,
-        refresh_token: str | None = None,
+        oauth_session: config_entry_oauth2_flow.OAuth2Session,
         session: aiohttp.ClientSession | None = None,
     ) -> None:
         """Initialize authentication."""
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.refresh_token = refresh_token
+        self._oauth_session = oauth_session
         self._session = session
         self._close_session = session is None
-
-        # Token storage
-        self._access_token: str | None = None
-        self._token_expires_at: float | None = None
         self._lock = asyncio.Lock()
 
     @staticmethod
@@ -63,60 +55,18 @@ class WattsVisionAuth:
     async def get_access_token(self) -> str:
         """Get a valid access token."""
         async with self._lock:
-            if self._is_token_valid():
-                return self._access_token
+            await self._oauth_session.async_ensure_token_valid()
 
-            if not self.refresh_token:
-                raise WattsVisionAuthError("No refresh token available. Please reauth.")
+            access_token = self._oauth_session.token.get("access_token")
+            if not access_token:
+                raise WattsVisionAuthError("No access token available in OAuth session")
 
-            await self._refresh_access_token()
-            return self._access_token
+            return str(access_token)
 
-    def _is_token_valid(self) -> bool:
-        """Check if current token is valid (with 60s buffer)."""
-        if not self._access_token or not self._token_expires_at:
-            return False
-        return time.time() < (self._token_expires_at - 60)
-
-    async def _refresh_access_token(self) -> None:
-        """Refresh access token using refresh token."""
-        data = {
-            "grant_type": "refresh_token",
-            "client_id": self.client_id,
-            "client_secret": self.client_secret,
-            "refresh_token": self.refresh_token,
-        }
-
-        try:
-            async with self.session.post(
-                OAUTH2_TOKEN,
-                data=data,
-                timeout=aiohttp.ClientTimeout(total=API_TIMEOUT),
-            ) as response:
-                if response.status != 200:
-                    error_text = await response.text()
-                    raise WattsVisionAuthError(
-                        f"Token request failed with status {response.status}: {error_text}"
-                    )
-
-                token_data = await response.json()
-
-                self._access_token = token_data.get("access_token")
-                if not self._access_token:
-                    raise WattsVisionAuthError("No access token in response")
-
-                expires_in = token_data.get("expires_in", 3600)
-                self._token_expires_at = time.time() + expires_in
-
-                if "refresh_token" in token_data:
-                    self.refresh_token = token_data["refresh_token"]
-
-        except aiohttp.ClientError as err:
-            raise WattsVisionConnectionError(
-                f"Connection error during authentication: {err}"
-            ) from err
-        except Exception as err:
-            raise WattsVisionAuthError(f"Authentication failed: {err}") from err
+    @property
+    def refresh_token(self) -> str | None:
+        """Get the current refresh token."""
+        return self._oauth_session.token.get("refresh_token")
 
     async def close(self) -> None:
         """Close the session."""

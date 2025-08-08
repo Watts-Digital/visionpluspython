@@ -4,18 +4,13 @@ from enum import Enum
 API_BASE_URL = "https://dev-vision.watts.io/api"
 API_TIMEOUT = 20
 
-# OAuth2 Token Endpoint
-OAUTH2_TOKEN = (
-    "https://visionlogindev.b2clogin.com/visionlogindev.onmicrosoft.com/"
-    "B2C_1A_VISION_UNIFIEDSIGNUPORSIGNIN/oauth2/v2.0/token"
-)
-
 # Device Interface Types
 INTERFACE_THERMOSTAT = "homeassistant.components.THERMOSTAT"
 INTERFACE_SWITCH = "homeassistant.components.SWITCH"
 
-DEFAULT_MIN_TEMPERATURE = 5.0
-DEFAULT_MAX_TEMPERATURE = 30
+DEFAULT_THERMOSTAT_MIN_TEMPERATURE = 5.0
+DEFAULT_THERMOSTAT_MAX_TEMPERATURE = 30
+DEFAULT_THERMOSTAT_MODE = "Off"
 
 # API Endpoints
 API_ENDPOINTS = {

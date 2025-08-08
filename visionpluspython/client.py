@@ -13,8 +13,8 @@ from .const import (
     API_BASE_URL,
     API_ENDPOINTS,
     API_TIMEOUT,
-    DEFAULT_MAX_TEMPERATURE,
-    DEFAULT_MIN_TEMPERATURE,
+    DEFAULT_THERMOSTAT_MAX_TEMPERATURE,
+    DEFAULT_THERMOSTAT_MIN_TEMPERATURE,
     ThermostatMode,
 )
 from .exceptions import (
@@ -221,8 +221,8 @@ class WattsVisionClient:
         if not isinstance(device, ThermostatDevice):
             raise WattsVisionDeviceError(f"Device {device_id} is not a thermostat")
 
-        min_temp = device.min_allowed_temperature or DEFAULT_MIN_TEMPERATURE
-        max_temp = device.max_allowed_temperature or DEFAULT_MAX_TEMPERATURE
+        min_temp = device.min_allowed_temperature or DEFAULT_THERMOSTAT_MIN_TEMPERATURE
+        max_temp = device.max_allowed_temperature or DEFAULT_THERMOSTAT_MAX_TEMPERATURE
 
         if not (min_temp <= temperature <= max_temp):
             raise WattsVisionDeviceError(

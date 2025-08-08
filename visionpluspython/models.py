@@ -5,7 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from .const import INTERFACE_SWITCH, INTERFACE_THERMOSTAT, ThermostatMode
+from .const import (
+    DEFAULT_THERMOSTAT_MAX_TEMPERATURE,
+    DEFAULT_THERMOSTAT_MIN_TEMPERATURE,
+    DEFAULT_THERMOSTAT_MODE,
+    INTERFACE_SWITCH,
+    INTERFACE_THERMOSTAT,
+    ThermostatMode,
+)
 from .exceptions import WattsVisionDeviceError
 
 
@@ -54,9 +61,9 @@ class ThermostatDevice(Device):
 
     current_temperature: float | None = None
     setpoint: float | None = None
-    thermostat_mode: str | None = None
-    min_allowed_temperature: float | None = None
-    max_allowed_temperature: float | None = None
+    thermostat_mode: str = "Off"
+    min_allowed_temperature: float = DEFAULT_THERMOSTAT_MIN_TEMPERATURE
+    max_allowed_temperature: float = DEFAULT_THERMOSTAT_MAX_TEMPERATURE
     temperature_unit: str = "°C"
     available_thermostat_modes: list[str] | None = None
 
@@ -70,6 +77,18 @@ class ThermostatDevice(Device):
     def from_dict(cls, data: dict[str, Any]) -> ThermostatDevice:
         """Create ThermostatDevice from API response data."""
         base_device = Device.from_dict(data)
+
+        min_temp = data.get("minAllowedTemperature")
+        max_temp = data.get("maxAllowedTemperature")
+        thermostat_mode = data.get("thermostatMode")
+
+        if min_temp is None:
+            min_temp = DEFAULT_THERMOSTAT_MIN_TEMPERATURE
+        if max_temp is None:
+            max_temp = DEFAULT_THERMOSTAT_MAX_TEMPERATURE
+        if thermostat_mode is None:
+            thermostat_mode = DEFAULT_THERMOSTAT_MODE
+
         return cls(
             device_id=base_device.device_id,
             device_name=base_device.device_name,
@@ -79,9 +98,9 @@ class ThermostatDevice(Device):
             is_online=base_device.is_online,
             current_temperature=data.get("currentTemperature"),
             setpoint=data.get("setpoint"),
-            thermostat_mode=data.get("thermostatMode"),
-            min_allowed_temperature=data.get("minAllowedTemperature"),
-            max_allowed_temperature=data.get("maxAllowedTemperature"),
+            thermostat_mode=thermostat_mode,
+            min_allowed_temperature=min_temp,
+            max_allowed_temperature=max_temp,
             temperature_unit=data.get("temperatureUnit", "°C"),
             available_thermostat_modes=data.get("availableThermostatModes", []),
         )
