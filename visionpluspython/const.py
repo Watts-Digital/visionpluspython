@@ -21,6 +21,7 @@ DEFAULT_MAX_TEMPERATURE = 35.0
 API_ENDPOINTS = {
     "discover": "/integrations/home-assistant/discover",
     "device_report": "/integrations/home-assistant/report/{device_id}",
+    "devices_report": "/integrations/home-assistant/report",
     "set_temperature": "/integrations/home-assistant/control/thermostat/{device_id}/set-temperature",
     "set_thermostat_mode": "/integrations/home-assistant/control/thermostat/{device_id}/set-mode",
     "set_switch_state": "/integrations/home-assistant/control/switch/{device_id}/change-state",

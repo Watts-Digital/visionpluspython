@@ -176,6 +176,42 @@ class WattsVisionClient:
             _LOGGER.error("Failed to get device %s: %s", device_id, err)
             raise
 
+    async def get_devices_report(self, device_ids: list[str]) -> dict[str, Device]:
+        """Get device state reports for multiple devices."""
+
+        if not device_ids:
+            return {}
+
+        params = [("deviceIds", device_id) for device_id in device_ids]
+
+        endpoint = API_ENDPOINTS["devices_report"]
+
+        try:
+            data = await self._make_request("GET", endpoint, params=params)
+
+            device_states = data.get("deviceStates", [])
+
+            devices_by_id = {}
+            for state in device_states:
+                device_id = state["deviceId"]
+
+                if device_id in self._devices_cache:
+                    cached_device = self._devices_cache[device_id]
+                    merged_data = {**cached_device.to_dict(), **state}
+                else:
+                    merged_data = state
+
+                device = create_device_from_data(merged_data)
+                devices_by_id[device_id] = device
+
+                self._devices_cache[device_id] = device
+
+            return devices_by_id
+
+        except Exception as err:
+            _LOGGER.error("Failed to get multiple device reports: %s", err)
+            raise
+
     async def set_thermostat_temperature(
         self, device_id: str, temperature: float
     ) -> None:
