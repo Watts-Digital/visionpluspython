@@ -7,6 +7,7 @@ import time
 from typing import Self
 
 import aiohttp
+import jwt
 
 from .const import API_TIMEOUT, OAUTH2_TOKEN
 from .exceptions import WattsVisionAuthError, WattsVisionConnectionError
@@ -33,6 +34,15 @@ class WattsVisionAuth:
         self._access_token: str | None = None
         self._token_expires_at: float | None = None
         self._lock = asyncio.Lock()
+
+    @staticmethod
+    def extract_user_id_from_token(token: str) -> str | None:
+        """Extract user ID from JWT access token."""
+        try:
+            payload = jwt.decode(token, options={"verify_signature": False})
+            return payload.get("sub")
+        except (jwt.DecodeError, jwt.InvalidTokenError, KeyError):
+            return None
 
     async def __aenter__(self) -> Self:
         if self._session is None:
