@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "visionpluspython"
+version = "1.0.0"
+description = "Python API wrapper for Watts Vision+ smart heating system"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Théo BRILLAND", email = "theo.brilland@wattswater.com"},
+    {name = "Devender VERMA", email = "devender.verma@wattswater.com"},
+    {name = "Seweryn SIREK", email = "ssi@spyro-soft.com"},
+]
+maintainers = [
+]
+keywords = ["watts", "vision", "plus", "smart", "heating", "thermostat", "home automation", "iot"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Home Automation",
+]
+dependencies = [
+    "aiohttp>=3.8.0,<4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "mypy>=1.0.0",
+    "twine>=4.0.0",
+    "build>=0.10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Watts-Digital/visionpluspython"
+Documentation = "https://github.com/Watts-Digital/visionpluspython"
+Repository = "https://github.com/Watts-Digital/visionpluspython"
+"Bug Tracker" = "https://github.com/Watts-Digital/visionpluspython/issues"
+Changelog = "https://github.com/Watts-Digital/visionpluspython/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["visionpluspython*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+visionpluspython = ["py.typed"]
