@@ -1,7 +1,7 @@
 from enum import Enum
 
 # API Configuration
-API_BASE_URL = "https://dev-vision.watts.io/api"
+API_BASE_URL = "https://prod-vision.watts.io/api"
 API_TIMEOUT = 20
 
 # Device Interface Types
