@@ -3,14 +3,25 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Self
+from typing import Any, Protocol, Self
 
 import aiohttp
 import jwt
 
-from homeassistant.helpers import config_entry_oauth2_flow
-
 from .exceptions import WattsVisionAuthError
+
+
+class OAuth2Session(Protocol):
+    """Protocol for OAuth2 session objects."""
+
+    @property
+    def token(self) -> dict[str, Any]:
+        """Get the current token."""
+        ...
+
+    async def async_ensure_token_valid(self) -> None:
+        """Ensure the token is valid."""
+        ...
 
 
 class WattsVisionAuth:
@@ -18,7 +29,7 @@ class WattsVisionAuth:
 
     def __init__(
         self,
-        oauth_session: config_entry_oauth2_flow.OAuth2Session,
+        oauth_session: OAuth2Session,
         session: aiohttp.ClientSession | None = None,
     ) -> None:
         """Initialize authentication."""

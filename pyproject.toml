@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "visionpluspython"
-version = "1.0.0"
+dynamic = ["version"]
 description = "Python API wrapper for Watts Vision+ smart heating system"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -52,3 +52,6 @@ exclude = ["tests*"]
 
 [tool.setuptools.package-data]
 visionpluspython = ["py.typed"]
+
+[tool.setuptools.dynamic]
+version = {attr = "visionpluspython.__version__"}
