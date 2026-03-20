@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from .const import (
+    DEFAULT_HVAC_ACTION,
     DEFAULT_THERMOSTAT_MAX_TEMPERATURE,
     DEFAULT_THERMOSTAT_MIN_TEMPERATURE,
     DEFAULT_THERMOSTAT_MODE,
@@ -61,7 +62,8 @@ class ThermostatDevice(Device):
 
     current_temperature: float | None = None
     setpoint: float | None = None
-    thermostat_mode: str = "Off"
+    thermostat_mode: str = DEFAULT_THERMOSTAT_MODE
+    hvac_action: str = DEFAULT_HVAC_ACTION
     min_allowed_temperature: float = DEFAULT_THERMOSTAT_MIN_TEMPERATURE
     max_allowed_temperature: float = DEFAULT_THERMOSTAT_MAX_TEMPERATURE
     temperature_unit: str = "°C"
@@ -81,6 +83,7 @@ class ThermostatDevice(Device):
         min_temp = data.get("minAllowedTemperature")
         max_temp = data.get("maxAllowedTemperature")
         thermostat_mode = data.get("thermostatMode")
+        hvac_action = data.get("hvacAction")
 
         if min_temp is None:
             min_temp = DEFAULT_THERMOSTAT_MIN_TEMPERATURE
@@ -88,6 +91,8 @@ class ThermostatDevice(Device):
             max_temp = DEFAULT_THERMOSTAT_MAX_TEMPERATURE
         if thermostat_mode is None:
             thermostat_mode = DEFAULT_THERMOSTAT_MODE
+        if hvac_action is None:
+            hvac_action = DEFAULT_HVAC_ACTION
 
         return cls(
             device_id=base_device.device_id,
@@ -103,6 +108,7 @@ class ThermostatDevice(Device):
             max_allowed_temperature=max_temp,
             temperature_unit=data.get("temperatureUnit", "°C"),
             available_thermostat_modes=data.get("availableThermostatModes", []),
+            hvac_action=hvac_action,
         )
 
     @property

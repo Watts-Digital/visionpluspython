@@ -11,6 +11,7 @@ INTERFACE_SWITCH = "homeassistant.components.SWITCH"
 DEFAULT_THERMOSTAT_MIN_TEMPERATURE = 5.0
 DEFAULT_THERMOSTAT_MAX_TEMPERATURE = 30
 DEFAULT_THERMOSTAT_MODE = "Off"
+DEFAULT_HVAC_ACTION = "Idle"
 
 # API Endpoints
 API_ENDPOINTS = {
@@ -21,7 +22,6 @@ API_ENDPOINTS = {
     "set_thermostat_mode": "/integrations/home-assistant/control/thermostat/{device_id}/set-mode",
     "set_switch_state": "/integrations/home-assistant/control/switch/{device_id}/change-state",
 }
-
 
 # Thermostat Modes
 class ThermostatMode(Enum):
