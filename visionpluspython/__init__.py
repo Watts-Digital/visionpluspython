@@ -12,7 +12,7 @@ from .exceptions import (
 )
 from .models import Device, SwitchDevice, ThermostatDevice
 
-__version__ = "1.0.2"
+__version__ = "1.1.0"
 
 __all__ = [
     "Device",
