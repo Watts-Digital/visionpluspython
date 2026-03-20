@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from .const import (
@@ -69,7 +69,7 @@ class ThermostatDevice(Device):
     min_allowed_temperature: float = DEFAULT_THERMOSTAT_MIN_TEMPERATURE
     max_allowed_temperature: float = DEFAULT_THERMOSTAT_MAX_TEMPERATURE
     temperature_unit: str = DEFAULT_TEMPERATURE_UNIT
-    available_thermostat_modes: list[str] = DEFAULT_AVAILABLE_THERMOSTAT_MODES
+    available_thermostat_modes: list[str] = field(default_factory=lambda: list(DEFAULT_AVAILABLE_THERMOSTAT_MODES))
 
     def to_dict(self) -> dict[str, Any]:
         """Convert thermostat device to dictionary."""
