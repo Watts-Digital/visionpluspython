@@ -23,6 +23,7 @@ API_ENDPOINTS = {
     "set_temperature": "/integrations/home-assistant/control/thermostat/{device_id}/set-temperature",
     "set_thermostat_mode": "/integrations/home-assistant/control/thermostat/{device_id}/set-mode",
     "set_switch_state": "/integrations/home-assistant/control/switch/{device_id}/change-state",
+    "activate_timer": "/integrations/home-assistant/control/thermostat/{device_id}/activate-timer",
 }
 
 # Thermostat Modes
