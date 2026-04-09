@@ -44,7 +44,7 @@ Homepage = "https://github.com/Watts-Digital/visionpluspython"
 Documentation = "https://github.com/Watts-Digital/visionpluspython"
 Repository = "https://github.com/Watts-Digital/visionpluspython"
 "Bug Tracker" = "https://github.com/Watts-Digital/visionpluspython/issues"
-Changelog = "https://github.com/Watts-Digital/visionpluspython/blob/main/CHANGELOG.md"
+Changelog = "https://github.com/Watts-Digital/visionpluspython/releases"
 
 [tool.setuptools.packages.find]
 where = ["."]
