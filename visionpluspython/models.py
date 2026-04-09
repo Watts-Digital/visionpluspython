@@ -126,7 +126,7 @@ class ThermostatDevice(Device):
             min_allowed_temperature=min_temp,
             max_allowed_temperature=max_temp,
             temperature_unit=data.get("temperatureUnit", DEFAULT_TEMPERATURE_UNIT),
-            available_thermostat_modes=data.get("availableThermostatModes", DEFAULT_AVAILABLE_THERMOSTAT_MODES),
+            available_thermostat_modes=list(data.get("availableThermostatModes") or DEFAULT_AVAILABLE_THERMOSTAT_MODES),
             hvac_action=hvac_action,
         )
 
