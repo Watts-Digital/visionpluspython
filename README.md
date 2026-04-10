@@ -48,6 +48,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Changelog
 
+### 1.2.0 (2026-03-20)
+- Add HVAC state to the API response
+- Fix serialization issue when API does not return all device fields
+- Use field default factory for available thermostat modes
+
+### 1.0.2 (2025-12-17)
+- Add strict typing
+
+### 1.0.1 (2025-09-29)
+- Use generic auth method
+- Add GitHub workflows for release and publishing to PyPI
+
 ### 1.0.0 (2025-08-01)
 - Initial release
 - OAuth2 authentication support
