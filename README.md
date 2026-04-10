@@ -48,7 +48,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Changelog
 
-### 1.2.0 (2026-03-20)
+### 1.1.0 (2026-03-20)
 - Add HVAC state to the API response
 - Fix serialization issue when API does not return all device fields
 - Use field default factory for available thermostat modes

@@ -260,6 +260,11 @@ class WattsVisionClient:
     ) -> None:
         """Activate thermostat timer mode with a target temperature and duration."""
 
+        if duration_minutes <= 0:
+            raise WattsVisionDeviceError(
+                f"Timer duration must be positive, got {duration_minutes}"
+            )
+
         device = await self.get_device(device_id)
         if not isinstance(device, ThermostatDevice):
             raise WattsVisionDeviceError(f"Device {device_id} is not a thermostat")
