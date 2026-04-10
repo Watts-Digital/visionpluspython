@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from http import HTTPStatus
 import logging
+import time
 from typing import Any, Self
 
 import aiohttp
@@ -158,15 +159,18 @@ class WattsVisionClient:
         endpoint = API_ENDPOINTS["device_report"].format(device_id=device_id)
         return await self._make_request("GET", endpoint)
 
-    async def get_device(self, device_id: str, refresh: bool = False) -> Device | None:
+    async def get_device(self, device_id: str) -> Device:
         """Get device data by ID."""
 
         try:
             state_data = await self.get_device_report(device_id)
 
-            cached_device = self._devices_cache[device_id]
-            device_data = cached_device.to_dict()
-            device_data.update(state_data)
+            if device_id in self._devices_cache:
+                device_data = self._devices_cache[device_id].to_dict()
+                device_data.update(state_data)
+            else:
+                device_data = state_data
+
             device = create_device_from_data(device_data)
             self._devices_cache[device_id] = device
 
@@ -233,8 +237,6 @@ class WattsVisionClient:
         endpoint = API_ENDPOINTS["set_temperature"].format(device_id=device_id)
         await self._make_request("POST", endpoint, {"targetTemperature": temperature})
 
-        # Update cached device
-        device.setpoint = temperature
         _LOGGER.debug("Set temperature to %s°C for device %s", temperature, device_id)
 
     async def set_thermostat_mode(
@@ -253,6 +255,41 @@ class WattsVisionClient:
 
         _LOGGER.debug("Set thermostat mode to %s for device %s", mode_value, device_id)
 
+    async def activate_thermostat_timer(
+        self, device_id: str, setpoint: float, duration_minutes: int
+    ) -> None:
+        """Activate thermostat timer mode with a target temperature and duration."""
+
+        if duration_minutes <= 0:
+            raise WattsVisionDeviceError(
+                f"Timer duration must be positive, got {duration_minutes}"
+            )
+
+        device = await self.get_device(device_id)
+        if not isinstance(device, ThermostatDevice):
+            raise WattsVisionDeviceError(f"Device {device_id} is not a thermostat")
+
+        min_temp = device.min_allowed_temperature or DEFAULT_THERMOSTAT_MIN_TEMPERATURE
+        max_temp = device.max_allowed_temperature or DEFAULT_THERMOSTAT_MAX_TEMPERATURE
+
+        if not (min_temp <= setpoint <= max_temp):
+            raise WattsVisionDeviceError(
+                f"Temperature {setpoint} is outside allowed range "
+                f"({min_temp}-{max_temp})"
+            )
+
+        timer_expiry = int(time.time()) + duration_minutes * 60
+
+        endpoint = API_ENDPOINTS["activate_timer"].format(device_id=device_id)
+        await self._make_request(
+            "POST", endpoint, {"setpoint": setpoint, "timerExpiry": timer_expiry}
+        )
+
+        _LOGGER.debug(
+            "Activated timer for device %s: %s°C for %d minutes",
+            device_id, setpoint, duration_minutes,
+        )
+
     async def set_switch_state(self, device_id: str, is_on: bool) -> None:
         """Set switch state."""
 
@@ -263,7 +300,6 @@ class WattsVisionClient:
         endpoint = API_ENDPOINTS["set_switch_state"].format(device_id=device_id)
         await self._make_request("POST", endpoint, {"isTurnedOn": is_on})
 
-        device.is_turned_on = is_on
         _LOGGER.debug(
             "Set switch %s for device %s", "on" if is_on else "off", device_id
         )
